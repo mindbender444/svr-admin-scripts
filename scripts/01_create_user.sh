@@ -45,18 +45,24 @@ if [[ "${add_to_sudo,,}" == "y" ]]; then
 fi
 
 # Option to copy the .ssh directory
-read -p "Do you want to copy the .ssh directory from /home/user to /home/$username? (Y/N): " copy_ssh
+read -p "Do you want to copy the .ssh directory from your home directory to /home/$username? (Y/N): " copy_ssh
 if [[ "${copy_ssh,,}" == "y" ]]; then
-    if [ -d "/home/user/.ssh" ]; then
-        cp -r /home/user/.ssh /home/$username/
-        chown -R "$username:$username" /home/$username/.ssh
-        chmod 700 /home/$username/.ssh
-        chmod 600 /home/$username/.ssh/*
+    # Use "$HOME" to refer to the current user's home directory
+    if [ -d "$HOME/.ssh" ]; then
+        # Copy the .ssh directory from the current user's home to the specified directory
+        cp -r "$HOME/.ssh" "/home/$username/"
+        # Set the owner of the copied .ssh directory to the specified user
+        chown -R "$username:$username" "/home/$username/.ssh"
+        # Set directory permissions
+        chmod 700 "/home/$username/.ssh"
+        # Set file permissions
+        chmod 600 "/home/$username/.ssh/"*
         echo "The .ssh directory has been copied and permissions have been set."
     else
-        echo "The .ssh directory does not exist in /home/user."
+        echo "The .ssh directory does not exist in your home directory."
     fi
 fi
+
 
 # Completion message
 echo "User $username has been created successfully."
